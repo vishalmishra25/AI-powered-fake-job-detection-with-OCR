@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI-Powered Fake Job Detection System</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <nav class="nav"><div class="brand"><span class="brand-mark">S</span><span>JobShield <small>AI DETECTION</small></span></div><span class="nav-status"><i></i> DEMO SYSTEM</span></nav>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow"><span></span> SMART RECRUITMENT SAFETY</div>
+      <h1>Make your next<br><em>career move safer.</em></h1>
+      <p class="hero-copy">Analyze job postings for fraud-related language and suspicious signals before sharing your personal information.</p>
+      <div class="hero-tags"><span>✦ NLP + Machine Learning</span><span>◈ Explainable signals</span><span>⌁ Privacy-conscious demo</span></div>
+    </section>
+    <section class="workspace">
+      <div class="form-panel">
+        <div class="panel-head"><div><span class="step">01 / ANALYZE</span><h2>Job posting details</h2></div><div class="head-icon">⌕</div></div>
+        <p class="panel-intro">Add the details you have. More context can improve the analysis.</p>
+        <form method="post" enctype="multipart/form-data">
+          <label for="job_title">Job title</label><input id="job_title" name="job_title" placeholder="e.g. Data Analyst Intern" value="{{ form.job_title }}">
+          <div class="two-col"><div><label for="company">Company name</label><input id="company" name="company" placeholder="Company or recruiter" value="{{ form.company }}"></div><div><label for="salary">Advertised salary</label><input id="salary" name="salary" placeholder="e.g. ₹20,000/month" value="{{ form.salary }}"></div></div>
+          <label for="website">Company website (optional)</label><input id="website" name="website" placeholder="https://company.example" value="{{ form.website }}">
+          <label for="job_image">Upload job screenshot/photo (optional)</label>
+          <input id="job_image" name="job_image" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
+          <p class="upload-help">Supported formats: PNG, JPG, JPEG, WEBP · Maximum 8 MB. OCR will read text from the image.</p>
+          <label for="description">Job description <b>*</b></label><textarea id="description" name="description" rows="7" placeholder="Paste the complete job description, requirements, salary promises, application instructions...">{{ form.description }}</textarea>
+          <div class="privacy-note"><span>ⓘ</span> Do not paste OTPs, passwords, bank details, or private personal information.</div>
+          <button type="submit" class="analyze-btn">Analyze job posting <span>→</span></button>
+        </form>
+      </div>
+      <aside class="result-panel">
+        <div class="result-top"><span class="step">02 / ASSESSMENT</span><span class="live-pill"><i></i> READY</span></div>
+        {% if result %}
+          {% if result.error %}<div class="empty-state"><div class="empty-icon">!</div><h3>More details needed</h3><p>{{ result.error }}</p></div>
+          {% else %}
+            <div class="result-status {{ 'danger' if result.label == 'Potentially Suspicious' else 'caution' }}"><span class="status-symbol">{{ '!' if result.label == 'Potentially Suspicious' else '✓' }}</span><div><h3>{{ result.label }}</h3><p>Model estimate · not a final verdict</p></div></div>
+            <div class="risk-row"><div><span class="muted-label">DEMO RISK INDICATOR</span><div class="risk-number">{{ result.risk }}<small>/100</small></div></div><div class="risk-ring" style="--risk: {{ result.risk }}%"><span>{{ result.risk }}%</span></div></div>
+            <div class="meter"><span style="width: {{ result.risk }}%"></span></div>
+            <h4 class="signals-title">Signals to review</h4><ul class="signals">{% for signal in result.signals %}<li><span>↗</span>{{ signal }}</li>{% endfor %}</ul>
+            <div class="advice"><strong>Recommended next step</strong><p>{{ result.advice }}</p></div>
+            {% if result.ocr_text %}
+              <div class="ocr-preview"><strong>Text extracted from image</strong><p>{{ result.ocr_text }}</p></div>
+            {% endif %}
+            <p class="model-note">{{ result.model_note }}</p>
+          {% endif %}
+        {% else %}
+          <div class="empty-state"><div class="radar"><span></span><b>AI</b></div><h3>Your analysis appears here</h3><p>Submit a job description to see the baseline model's classification, a demo risk indicator, and warning signals.</p><div class="mini-stats"><div><b>01</b><span>Read listing</span></div><div><b>02</b><span>Check signals</span></div><div><b>03</b><span>Verify safely</span></div></div></div>
+        {% endif %}
+        <div class="disclaimer"><span>⚠</span><p><b>Use with care.</b> This academic prototype uses a small demonstration dataset. A low-risk result does not prove a job is legitimate.</p></div>
+      </aside>
+    </section>
+    <footer><span>JOBSHIELD AI · ACADEMIC PROJECT</span><span>TF-IDF + LOGISTIC REGRESSION · FLASK</span></footer>
+  </main>
+</body></html>
